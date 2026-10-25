@@ -218,13 +218,23 @@ def genres_only_in_one(movies_a, movies_b) -> set:
         genres_b.update(m.get("genres", set()))
     return genres_a - genres_b
 
-mid = len(movies) // 2
-only_first = genres_only_in_one(movies[:mid], movies[mid:])
-if only_first:
-    print("Жанры только в первой половине:", only_first)
-else:
-    print("Нет жанров, уникальных для первой половины — все жанры пересекаются со второй.")
 
+def iter_high_rated(movies, min_rating=8.0):
+    for m in movies:
+        if m.get("rating", 0) >= min_rating:
+            yield m
+
+
+total_duration_high = sum(
+    m["duration_min"]
+    for m in movies
+    if m.get("rating", 0) > 7
+)
+
+for m in iter_high_rated(movies, 8.0):
+    print(format_report_line(m))
+
+print("Суммарная длительность (рейтинг > 7):", total_duration_high, "минут")
 
 
 
