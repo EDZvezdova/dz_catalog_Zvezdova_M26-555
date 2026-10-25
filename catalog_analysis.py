@@ -196,14 +196,35 @@ def high_rated_titles(movies) -> Dict[str, float]:
         if m.get("rating", 0) > avg
     }
 
-print(count_by_genre(movies))
-# {'sci-fi': 3, 'drama': 4, 'comedy': 2, ...}
+def all_genres(movies) -> set:
+    result = set()
+    for m in movies:
+        result.update(m.get("genres", set()))
+    return result
 
-print(actor_filmography(movies)[list(actor_filmography(movies).keys())[0]])
-# Например: ['The Dune Chronicles', 'The Quiet Algorithm']
 
-print(high_rated_titles(movies))
-# {'The Quiet Algorithm': 9.2, 'midnight in oslo': 8.9, ...}
+def common_actors(movie1, movie2) -> set:
+    actors1 = set(movie1.get("actors", []))
+    actors2 = set(movie2.get("actors", []))
+    return actors1 & actors2
+
+
+def genres_only_in_one(movies_a, movies_b) -> set:
+    genres_a = set()
+    genres_b = set()
+    for m in movies_a:
+        genres_a.update(m.get("genres", set()))
+    for m in movies_b:
+        genres_b.update(m.get("genres", set()))
+    return genres_a - genres_b
+
+mid = len(movies) // 2
+only_first = genres_only_in_one(movies[:mid], movies[mid:])
+if only_first:
+    print("Жанры только в первой половине:", only_first)
+else:
+    print("Нет жанров, уникальных для первой половины — все жанры пересекаются со второй.")
+
 
 
 
