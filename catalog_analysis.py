@@ -49,15 +49,31 @@ def duration_in_hours(minutes):
     remaining_minutes = minutes % 60
     return f"{hours}ч {remaining_minutes}м"
 
-# 1. Средняя оценка
-avg_r = average_rating(movies)
-print(f"Средняя оценка: {avg_r}")  # Например: 7.5
 
-# 2. Статистика по возрасту (на 2026 год)
-stats = catalog_age_stats(movies, current_year=2026)
-print(f"Возраст (старый, новый, средний): {stats}")  
-# Например: (36, 11, 24) — средний будет округлён вверх
+def rating_tier(rating):
+    if rating >= 9:
+        return "шедевр"
+    elif rating >= 7:
+        return "отличный фильм" if rating > 8 else "хорошо"
+    elif rating >= 5:
+        return "средне"
+    else:
+        return "слабо"
 
-# 3. Длительность в часах и минутах
-duration_str = duration_in_hours(183)
-print(f"Длительность: {duration_str}")  # "3ч 3м"
+
+def decade_label(year):
+    match True:
+        case _ if year > 2020:
+            return "новые"
+        case _ if 2015 <= year <= 2020:
+            return "недавние"
+        case _ if year < 2015:
+            return "старые"
+
+tests_rating = [9.0, 8.99, 7.0, 6.99, 5.0, 4.99]
+for r in tests_rating:
+    print(r, "→", rating_tier(r))
+
+tests_year = [2021, 2020, 2015, 2014]
+for y in tests_year:
+    print(y, "→", decade_label(y))
