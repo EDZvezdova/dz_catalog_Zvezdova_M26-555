@@ -87,7 +87,6 @@ def find_first_masterpiece(movie_list):
     else:
         print("Шедевров не найдено")
 
-find_first_masterpiece(movies)
 
 
 def count_long_movies(movie_list, threshold=120):
@@ -98,5 +97,81 @@ def count_long_movies(movie_list, threshold=120):
             count += 1 
     return count
 
-result = count_long_movies(movies, threshold=120)
-print(f"Количество фильмов длиннее 120 минут: {result}")
+def duration_in_hours(minutes: int) -> str:
+    """Переводит минуты в строку формата 'Xч Yм'."""
+    hours = minutes // 60
+    remaining_minutes = minutes % 60
+    return f"{hours}ч {remaining_minutes}м"
+
+
+def normalize_title(title: str) -> str:
+    """
+    Приводит строку к Title Case без str.title().
+    Разбивает по пробелам, вручную делает первую букву заглавной через срез.
+    """
+    if not title:
+        return ""
+    
+    words = title.split(" ")
+    normalized_words = []
+    
+    for word in words:
+        if not word:
+            normalized_words.append(word)
+            continue
+        # Меняем только первую букву вручную: word[0].upper() + word[1:]
+        normalized_word = word[0].upper() + word[1:]
+        normalized_words.append(normalized_word)
+    
+    return " ".join(normalized_words)
+
+
+def make_slug(title: str) -> str:
+    """
+    Превращает название в слаг: все буквы в нижний регистр, пробелы → дефисы.
+    Использует .lower() и .replace().
+    """
+    lower_title = title.lower()
+    slug = lower_title.replace(" ", "-")
+    return slug
+
+
+def format_report_line(movie: dict) -> str:
+    """
+    Возвращает единую строку с описанием фильма в формате:
+    '"<Название>" (<год>) — <рейтинг>/10, <длительность>, жанры: <жанр1, жанр2>'
+    
+    Обязательно использует f-строку и вызывает duration_in_hours.
+    Жанры отсортированы по алфавиту.
+    """
+    title = movie.get("title", "")
+    year = movie.get("year", "?")
+    rating = movie.get("rating", "?")
+    duration_min = movie.get("duration_min", 0)
+    genres = movie.get("genres", set())
+    
+    # Нормализуем название
+    norm_title = normalize_title(title)
+    
+    # Получаем длительность через функцию из этапа 1
+    duration_str = duration_in_hours(duration_min)
+    
+    # Сортируем жанры по алфавиту и собираем в строку
+    sorted_genres = sorted(genres)
+    genres_str = ", ".join(sorted_genres)
+    
+    # Собираем итоговую строку через f-строку в требуемом формате
+    report = f'"{norm_title}" ({year}) — {rating}/10, {duration_str}, жанры: {genres_str}'
+    return report
+# Примеры для проверки отдельных функций
+print(normalize_title("silent hours"))      # "Silent Hours"
+print(make_slug("Silent Hours"))            # "silent-hours"
+
+# Пример для format_report_line (для фильма movies[7] — "The Quiet Algorithm")
+if len(movies) > 7:
+    print(format_report_line(movies[1]))
+    # Ожидаемый вывод:
+    # "The Quiet Algorithm" (2024) — 9.2/10, 1ч 58м, жанры: drama, sci-fi
+
+
+
