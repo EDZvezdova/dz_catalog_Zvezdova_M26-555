@@ -70,10 +70,33 @@ def decade_label(year):
         case _ if year < 2015:
             return "старые"
 
-tests_rating = [9.0, 8.99, 7.0, 6.99, 5.0, 4.99]
-for r in tests_rating:
-    print(r, "→", rating_tier(r))
 
-tests_year = [2021, 2020, 2015, 2014]
-for y in tests_year:
-    print(y, "→", decade_label(y))
+for movie in movies:
+    if "comedy" in movie["genres"]:
+        continue
+    print(movie["title"])
+
+
+def find_first_masterpiece(movie_list):
+    index = 0
+    while index < len(movie_list):
+        if movie_list[index]["rating"] > 9.0:
+            print(f"Первый шедевр найден: {movie_list[index]['title']} (рейтинг {movie_list[index]['rating']})")
+            break
+        index += 1
+    else:
+        print("Шедевров не найдено")
+
+find_first_masterpiece(movies)
+
+
+def count_long_movies(movie_list, threshold=120):
+    count = 0
+    for movie in movie_list:
+        duration = movie.get("duration_min", 0)
+        if duration > threshold:
+            count += 1 
+    return count
+
+result = count_long_movies(movies, threshold=120)
+print(f"Количество фильмов длиннее 120 минут: {result}")
