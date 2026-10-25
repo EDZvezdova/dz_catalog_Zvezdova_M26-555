@@ -157,16 +157,53 @@ def top_n_by_rating(movies, n=3):
     )[:n]
     return [(m["title"], m["rating"]) for m in top_movies]
 
-# Допустим, у тебя есть список movies
-top_3 = top_n_by_rating(movies, 3)
-print(top_3)
-# Пример вывода:
-# [("The Quiet Algorithm", 9.2), ("midnight in oslo", 8.9), ("The Dune Chronicles", 8.6)]
+from typing import Dict, List
 
-titles_sorted = titles_sorted_by_rating(movies)
-print(titles_sorted[:5])
-# Пример вывода (первые 5 названий):
-# ["The Quiet Algorithm", "midnight in oslo", "The Dune Chronicles", ...]
+def average_rating(movies):
+    if not movies:
+        return 0.0
+    total = sum(m.get("rating", 0) for m in movies)
+    return round(total / len(movies), 1)
+
+
+def count_by_genre(movies) -> Dict[str, int]:
+    counts = {}
+    for movie in movies:
+        genres = movie.get("genres", set())
+        for g in genres:
+            current = counts.get(g, 0)
+            counts[g] = current + 1
+    return counts
+
+
+def actor_filmography(movies) -> Dict[str, List[str]]:
+    filmography = {}
+    for movie in movies:
+        title = movie.get("title", "")
+        actors = movie.get("actors", [])
+        for actor in actors:
+            if actor not in filmography:
+                filmography[actor] = []
+            filmography[actor].append(title)
+    return filmography
+
+
+def high_rated_titles(movies) -> Dict[str, float]:
+    avg = average_rating(movies)
+    return {
+        m["title"]: m["rating"]
+        for m in movies
+        if m.get("rating", 0) > avg
+    }
+
+print(count_by_genre(movies))
+# {'sci-fi': 3, 'drama': 4, 'comedy': 2, ...}
+
+print(actor_filmography(movies)[list(actor_filmography(movies).keys())[0]])
+# Например: ['The Dune Chronicles', 'The Quiet Algorithm']
+
+print(high_rated_titles(movies))
+# {'The Quiet Algorithm': 9.2, 'midnight in oslo': 8.9, ...}
 
 
 
