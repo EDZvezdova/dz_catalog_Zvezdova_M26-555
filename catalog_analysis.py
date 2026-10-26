@@ -71,11 +71,6 @@ def decade_label(year):
             return "старые"
 
 
-for movie in movies:
-    if "comedy" in movie["genres"]:
-        continue
-    print(movie["title"])
-
 
 def find_first_masterpiece(movie_list):
     index = 0
@@ -105,8 +100,7 @@ def duration_in_hours(minutes: int) -> str:
 
 def normalize_title(title: str) -> str:
     if not title:
-        return ""
-    
+        return ""    
     words = title.split(" ")
     normalized_words = []
     
@@ -231,11 +225,48 @@ total_duration_high = sum(
     if m.get("rating", 0) > 7
 )
 
-for m in iter_high_rated(movies, 8.0):
-    print(format_report_line(m))
+def build_report(movies):
+    total_movies = len(movies)
+    avg_rating = sum(m.get("rating", 0) for m in movies) / total_movies if total_movies else 0
+    total_duration = sum(m.get("duration_min", 0) for m in movies)
+    hours = total_duration // 60
+    mins = total_duration % 60
 
-print("Суммарная длительность (рейтинг > 7):", total_duration_high, "минут")
+    print("\n ОБЩАЯ СТАТИСТИКА:")
+    print(f"   Всего фильмов: {total_movies}")
+    print(f"   Средний рейтинг: {avg_rating:.2f}")
+    print(f"   Суммарная длительность: {hours} ч {mins} м")
 
+    
+    print("\n ТОП-3 ФИЛЬМА ПО РЕЙТИНГУ:")
+    top_3 = top_n_by_rating(movies, 3)
+    if not top_3:
+        print("   Нет фильмов для отображения.")
+    else:
+        for i, (title, rating) in enumerate(top_3, 1):
+            print(f"   {i}. {title} — {rating}/10")
+
+    print("\n КОЛИЧЕСТВО ФИЛЬМОВ ПО ЖАНРАМ:")
+    genre_counts = count_by_genre(movies)
+    if not genre_counts:
+        print("   Жанры не найдены.")
+    else:
+        for genre, count in sorted(genre_counts.items(), key=lambda x: x[1], reverse=True):
+            print(f"   {genre}: {count}")
+
+    # Полный список уникальных жанров
+    print("\n УНИКАЛЬНЫЕ ЖАНРЫ КАТАЛОГА:")
+    unique_genres = sorted(all_genres(movies))
+    if unique_genres:
+        # Выводим списком, чтобы было читаемо
+        print("   " + ", ".join(unique_genres))
+    else:
+        print("   Уникальные жанры не найдены.")
+
+
+
+if __name__ == "__main__":
+    build_report(movies)
 
 
 
