@@ -1,0 +1,30 @@
+[project]
+name = "dz-catalog-analysis-zvezdova-m26-555"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Elena Zvezdova", email = "zvezdova.ed@yandex.ru" }
+]
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+dz-catalog-analysis-zvezdova-m26-555 = "dz_catalog_analysis_zvezdova_m26_555:main"
+
+[build-system]
+requires = ["uv_build>=0.13.4,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17.1",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I"]
+ignore = []

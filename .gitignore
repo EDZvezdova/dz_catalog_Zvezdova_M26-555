@@ -1,0 +1,26 @@
+# Виртуальные окружения
+venv/
+.venv/
+env/
+
+# Файлы IDE (VS Code)
+.vscode/
+*.code-workspace
+
+# Файлы ОС
+.DS_Store
+Thumbs.db
+
+# Кэш Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Пакеты зависимостей
+dist/
+build/
+*.egg-info
+
+# Локальные конфиги, которые не надо пушить
+.env
+secrets.json
